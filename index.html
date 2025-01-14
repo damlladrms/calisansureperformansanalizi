@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Çalışan Analiz Sistemi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            margin: 20px 0;
+        }
+        
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #ffe6e6;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .button-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .button-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Çalışan Analiz Sistemi</h1>
+            
+            <div id="error-message" class="error-message"></div>
+            
+            <form id="upload-form">
+                <input type="file" id="video-input" accept="video/*" style="display: none">
+                <button type="button" class="button button-primary" onclick="document.getElementById('video-input').click()">
+                    Video Seç
+                </button>
+            </form>
+            
+            <div id="video-container" class="video-container" style="display: none">
+                <video id="video-player" controls>
+                    Tarayıcınız video oynatmayı desteklemiyor.
+                </video>
+                <button id="remove-video" class="button button-danger" style="margin-top: 10px" onclick="removeVideo()">
+                    Videoyu Kaldır
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const videoInput = document.getElementById('video-input');
+        const videoPlayer = document.getElementById('video-player');
+        const videoContainer = document.getElementById('video-container');
+        const errorMessage = document.getElementById('error-message');
+
+        videoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const validTypes = ['video/mp4', 'video/quicktime', 'video/x-msvideo'];
+                if (!validTypes.includes(file.type)) {
+                    errorMessage.textContent = 'Lütfen geçerli bir video dosyası seçin (MP4, MOV, AVI)';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+
+                const url = URL.createObjectURL(file);
+                videoPlayer.src = url;
+                videoContainer.style.display = 'block';
+                errorMessage.style.display = 'none';
+            }
+        });
+
+        function removeVideo() {
+            videoPlayer.src = '';
+            videoInput.value = '';
+            videoContainer.style.display = 'none';
+        }
+
+        videoPlayer.addEventListener('error', function() {
+            errorMessage.textContent = 'Video oynatılırken bir hata oluştu';
+            errorMessage.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
